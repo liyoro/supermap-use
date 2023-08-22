@@ -1,0 +1,44 @@
+{
+  "id": "3302651",
+  "name": "框架用",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1224717",
+      "name": "map",
+      "font_class": "map",
+      "unicode": "e6a2",
+      "unicode_decimal": 59042
+    },
+    {
+      "icon_id": "1898676",
+      "name": "dashboard",
+      "font_class": "dashboard",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "1899062",
+      "name": "table",
+      "font_class": "table",
+      "unicode": "e72d",
+      "unicode_decimal": 59181
+    },
+    {
+      "icon_id": "6626168",
+      "name": "Dashboard",
+      "font_class": "mine",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "15838441",
+      "name": "chart-bar",
+      "font_class": "chart",
+      "unicode": "e667",
+      "unicode_decimal": 58983
+    }
+  ]
+}
