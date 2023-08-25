@@ -7,13 +7,6 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-function onload(SuperMap3D) {
-  var viewer = new SuperMap3D.Viewer('map')
-  viewer.imageryLayers.addImageryProvider(new SuperMap3D.SingleTileImageryProvider({
-    url: './images/worldimage.jpg'
-  }))
-}
 import indexjs from './index.js'
 export default {
   ...indexjs

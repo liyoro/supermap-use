@@ -63,6 +63,24 @@ export const constantRoutes = [
       title: '大屏',
       icon: 'el-icon-s-platform'
     }
+  },
+  {
+    path: '/cesium',
+    name: 'cesium',
+    component: () => import('@/views/cesium/index.vue'),
+    meta: {
+      title: '大屏',
+      icon: 'el-icon-s-platform'
+    }
+  },
+  {
+    path: '/supermap3d',
+    name: 'supermap3d',
+    component: () => import('@/views/supermap3d/index.vue'),
+    meta: {
+      title: '大屏',
+      icon: 'el-icon-s-platform'
+    }
   }
 ]
 

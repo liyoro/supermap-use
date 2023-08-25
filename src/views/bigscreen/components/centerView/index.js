@@ -19,6 +19,8 @@ import ScaleLine from 'ol/control/ScaleLine'
 // import { MapService } from '@supermap/iclient-ol'
 // import { VectorTileSuperMapRest } from '@supermap/iclient-ol'
 
+let viewer = null
+
 export default {
   name: 'CenterView',
   props: {
@@ -39,7 +41,7 @@ export default {
       // EPSG:3857
       China_Light: 'https://maptiles.supermapol.com/iserver/services/map_China/rest/maps/China_Light',
       // 京津地区土地利用现状图 EPSG:3857
-      mapService: 'https://www.supermapol.com/proxy/iserver/services/map_jingjin_62mzqg3d/rest/maps/%E4%BA%AC%E6%B4%A5%E5%9C%B0%E5%8C%BA%E5%9C%9F%E5%9C%B0%E5%88%A9%E7%94%A8%E7%8E%B0%E7%8A%B6%E5%9B%BE?prjCoordSys=%7B%22epsgCode%22:3857%7D'
+      mapService: 'https://www.supermapol.com/proxy/iserver/services/map_jingjin_62mzqg3d/rest/maps/%E4%BA%AC%E6%B4%A5%E5%9C%B0%E5%8C%BA%E5%9C%9F%E5%9C%B0%E5%88%A9%E7%94%A8%E7%8E%B0%E7%8A%B6%E5%9B%BE?prjCoordSys=%7B%22epsgCode%22:3857%7D',
       // mapOptions: {
       //   container: 'map', // container id
       //   style: {
@@ -66,12 +68,15 @@ export default {
       //   center: [120.143, 30.236], // starting position
       //   zoom: 3 // starting zoom
       // }
+      shinePoint: {
+        position: { lng: 110.286983, lat: 21.607153, height: 34500 }
+      }
     }
   },
   computed: {
   },
   mounted() {
-    // this.initData3()
+    this.initData3()
   },
   created() {
   },
@@ -192,12 +197,71 @@ export default {
     },
     // 加载3D超图
     initData3() {
-      // const viewer = new Cesium.Viewer('map')
       // eslint-disable-next-line no-unused-vars
-      const viewer = new SuperMap3D.Viewer('map')
-      viewer.imageryLayers.addImageryProvider(new SuperMap3D.SingleTileImageryProvider({
-        url: './images/worldimage.jpg'
-      }))
+      window.viewer = new Cesium.Viewer('map', {
+        logo: false,
+        navigation: false,
+        animation: false,
+        scene3DOnly: true,
+        sceneMode: Cesium.SceneMode.SCENE3D,
+        requestRenderMode: true,
+        contextOptions: {
+          webgl: {
+            alpha: true,
+            depth: true,
+            stencil: true,
+            antialias: true,
+            premultipliedAlpha: true,
+            // 通过canvas.toDataURL()实现截图需要将该项设置为true
+            preserveDrawingBuffer: true,
+            failIfMajorPerformanceCaveat: true
+          }
+        }
+      })
+      viewer = window.viewer
+      const { scene } = viewer
+      const pointDestination = Cesium.Cartesian3.fromDegrees(this.shinePoint.position.lng, this.shinePoint.position.lat, this.shinePoint.position.height) // 视野点
+      scene.camera.setView({
+        destination: pointDestination,
+        orientation: {
+          heading: Cesium.Math.toRadians(0), // east, default value is 0.0 (north) //东西南北朝向
+          pitch: Cesium.Math.toRadians(-90), // default value (looking down)  //俯视仰视视觉
+          roll: 0.0 // default value
+        }
+      })
+      // 本地图片底图
+      // viewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+      //   url: './images/worldimage.jpg'
+      // }))
+      // 天地图
+      // viewer.imageryLayers.addImageryProvider(new Cesium.TiandituImageryProvider({
+      //   credit: new Cesium.Credit('天地图全球影像服务     数据来源：国家地理信息公共服务平台 & 四川省测绘地理信息局'),
+      //   token: 'f51cd476ac10d6ecd00488562d080032'
+      // }))
+      const imageryLayers = viewer.imageryLayers
+      // 初始化天地图全球中文注记服务，并添加至影像图层
+      const labelImagery = new Cesium.TiandituImageryProvider({
+        mapStyle: Cesium.TiandituMapsStyle.CIA_C, // 天地图全球中文注记服务（经纬度投影）
+        token: 'f51cd476ac10d6ecd00488562d080032'
+      })
+      imageryLayers.addImageryProvider(labelImagery)
+      // end
+      // this.flyToPoi(this.shinePoint.position)
+      // const viewer = new SuperMap3D.Viewer('map')
+      // viewer.imageryLayers.addImageryProvider(new SuperMap3D.SingleTileImageryProvider({
+      //   url: './images/worldimage.jpg'
+      // }))
+    },
+    flyToPoi(position) {
+      viewer?.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(position.lng, position.lat, 6500.0),
+        orientation: {
+          heading: Cesium.Math.toRadians(0), // east, default value is 0.0 (north) //东西南北朝向
+          pitch: Cesium.Math.toRadians(-90), // default value (looking down)  //俯视仰视视觉
+          roll: 0.0 // default value
+        },
+        duration: 3 // 3秒到达战场
+      })
     }
   },
   watch: {}
